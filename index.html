@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月影祭アンケート</title>
+
+<style>
+body{
+margin:0;
+font-family:sans-serif;
+background:linear-gradient(180deg,#0c1026,#141a3a);
+color:white;
+display:flex;
+justify-content:center;
+}
+
+.container{
+width:100%;
+max-width:420px;
+padding:20px;
+text-align:center;
+}
+
+h2{
+font-size:16px;
+margin:25px 0 15px;
+}
+
+.choices{
+display:flex;
+justify-content:center;
+gap:10px;
+}
+
+.choice{
+cursor:pointer;
+width:110px;
+}
+
+.choice img{
+width:100%;
+border-radius:12px;
+}
+
+textarea{
+width:100%;
+height:160px;
+padding:12px;
+border-radius:12px;
+border:none;
+background:rgba(255,255,255,0.08);
+color:white;
+resize:vertical;
+}
+
+button{
+margin-top:20px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#6a7cff,#8f9cff);
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>分掌を選んでください</h2>
+
+<div class="choices">
+
+<div class="choice" data-value="全体運営"
+data-off="https://i.imgur.com/SB5uYuu.png"
+data-on="https://i.imgur.com/0M6Yvmx.png">
+<img src="https://i.imgur.com/SB5uYuu.png">
+</div>
+
+<div class="choice" data-value="講堂企画"
+data-off="https://i.imgur.com/YZctYtx.png"
+data-on="https://i.imgur.com/Qf9Vvxk.png">
+<img src="https://i.imgur.com/YZctYtx.png">
+</div>
+
+<div class="choice" data-value="セレモニー・広報"
+data-off="https://i.imgur.com/KvbO4N5.png"
+data-on="https://i.imgur.com/7PWkgwT.png">
+<img src="https://i.imgur.com/KvbO4N5.png">
+</div>
+
+</div>
+
+<h2>
+実施する企画と説明（時間や順番、内容など決まっているもの）を記入してください
+</h2>
+
+<textarea id="content"></textarea>
+
+<button onclick="submitForm()">提出</button>
+
+</div>
+
+<script>
+let selected = "全体運営";
+const choices = document.querySelectorAll(".choice");
+
+choices[0].querySelector("img").src = choices[0].dataset.on;
+
+choices.forEach(el=>{
+el.onclick=()=>{
+
+choices.forEach(e=>{
+e.querySelector("img").src = e.dataset.off;
+});
+
+el.querySelector("img").src = el.dataset.on;
+selected = el.dataset.value;
+
+};
+});
+
+function submitForm(){
+
+const content = document.getElementById("content").value;
+
+fetch("https://script.google.com/macros/s/AKfycbwQG3IInMD9RE4VH8meyFC-joQnEWpPJFknE9VejMbrrLXTzj7pDrAvfS2BrBoHqfwbdw/exec",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+department:selected,
+content:content
+})
+})
+.then(()=>{
+
+alert("送信しました");
+
+document.getElementById("content").value="";
+
+choices.forEach(e=>{
+e.querySelector("img").src = e.dataset.off;
+});
+
+choices[0].querySelector("img").src = choices[0].dataset.on;
+selected="全体運営";
+
+})
+.catch(()=>{
+alert("送信失敗");
+});
+
+}
+</script>
+
+</body>
+</html>
