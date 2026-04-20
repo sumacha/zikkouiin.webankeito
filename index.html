@@ -14,35 +14,29 @@ color:white;
 display:flex;
 justify-content:center;
 }
-
 .container{
 width:100%;
 max-width:420px;
 padding:20px;
 text-align:center;
 }
-
 h2{
 font-size:16px;
 margin:25px 0 15px;
 }
-
 .choices{
 display:flex;
 justify-content:center;
 gap:10px;
 }
-
 .choice{
 cursor:pointer;
 width:110px;
 }
-
 .choice img{
 width:100%;
 border-radius:12px;
 }
-
 textarea{
 width:100%;
 height:160px;
@@ -51,9 +45,7 @@ border-radius:12px;
 border:none;
 background:rgba(255,255,255,0.08);
 color:white;
-resize:vertical;
 }
-
 button{
 margin-top:20px;
 width:100%;
@@ -62,8 +54,6 @@ border:none;
 border-radius:12px;
 background:linear-gradient(90deg,#6a7cff,#8f9cff);
 color:white;
-font-size:16px;
-cursor:pointer;
 }
 </style>
 </head>
@@ -102,62 +92,49 @@ data-on="https://i.imgur.com/7PWkgwT.png">
 
 <textarea id="content"></textarea>
 
-<button onclick="submitForm()">提出</button>
+<form id="form"
+action="https://script.google.com/macros/s/AKfycbwQG3IInMD9RE4VH8meyFC-joQnEWpPJFknE9VejMbrrLXTzj7pDrAvfS2BrBoHqfwbdw/exec"
+method="POST"
+target="hidden_iframe">
+
+<input type="hidden" name="department" id="department">
+<input type="hidden" name="content" id="content_hidden">
+
+<button type="submit">提出</button>
+
+</form>
+
+<iframe name="hidden_iframe" style="display:none;"></iframe>
 
 </div>
 
 <script>
-let selected = "全体運営";
-const choices = document.querySelectorAll(".choice");
+let selected="全体運営";
+const choices=document.querySelectorAll(".choice");
 
-choices[0].querySelector("img").src = choices[0].dataset.on;
+choices[0].querySelector("img").src=choices[0].dataset.on;
 
 choices.forEach(el=>{
 el.onclick=()=>{
-
 choices.forEach(e=>{
-e.querySelector("img").src = e.dataset.off;
+e.querySelector("img").src=e.dataset.off;
 });
-
-el.querySelector("img").src = el.dataset.on;
-selected = el.dataset.value;
-
+el.querySelector("img").src=el.dataset.on;
+selected=el.dataset.value;
 };
 });
 
-function submitForm(){
-
-const content = document.getElementById("content").value;
-
-fetch("https://script.google.com/macros/s/AKfycbwQG3IInMD9RE4VH8meyFC-joQnEWpPJFknE9VejMbrrLXTzj7pDrAvfS2BrBoHqfwbdw/exec",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-department:selected,
-content:content
-})
-})
-.then(()=>{
+document.getElementById("form").onsubmit=()=>{
+document.getElementById("department").value=selected;
+document.getElementById("content_hidden").value=
+document.getElementById("content").value;
 
 alert("送信しました");
 
+setTimeout(()=>{
 document.getElementById("content").value="";
-
-choices.forEach(e=>{
-e.querySelector("img").src = e.dataset.off;
-});
-
-choices[0].querySelector("img").src = choices[0].dataset.on;
-selected="全体運営";
-
-})
-.catch(()=>{
-alert("送信失敗");
-});
-
-}
+},300);
+};
 </script>
 
 </body>
